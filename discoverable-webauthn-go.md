@@ -34,7 +34,7 @@ The login process is where we see major differences between username and discove
 options, sessionData, err := a.Web.BeginLogin(&webauthnUser)
 ```
 
-However, for discoverable login, we aren't given a username, so we only pass along our login options (if desired, but not essential) or nothing at all. In return, we'll receieve session data, which we'll need to save for the second part of the login process.
+However, for discoverable login, we aren't given a username, so we only pass along our login options (if desired, but not essential) or nothing at all. In return, we'll receieve session data, which we'll need to save for the second part of the login process, and the options you'll pass along to the frontend, both of which you should already be doing for username based auth.
 ```go
 // https://github.com/ashirt-ops/ashirt-server/blob/main/backend/authschemes/webauthn/webauthn.go
 // beginLogin
@@ -54,7 +54,7 @@ In the traditional login process, you're basically home free at this point. You 
 cred, err = a.Web.FinishLogin(user, *data.WebAuthNSessionData, r)
 ```
 However, it gets substantially trickier for validating the discoverable login. 
-1. The first step is parsing the credential request. Most of the other functions we've used (FinishRegistration, BeginLogin, FinishLogin) have handled parsing for us, but here we need to parse it ourselves.
+1. The first step is parsing the credential request. Most of the other functions we've used (`FinishRegistration`, `BeginLogin`, `FinishLogin`) have handled parsing for us, but here we need to parse it ourselves.
 2. We then create a `userHandler` which we will allow us to get the User from our database using either the `rawID` or the `userHandle`, both of which are byte slices
 3. Pass the handle, session data, and parsed response to `ValidateDiscoverableLogin`.
 ```go
